@@ -2,23 +2,39 @@
 <html>
 <head>
   <title>Thermostat</title>
-
+  <link href='style.css' rel='stylesheet' type='text/css'>
 </head>
 <body>
   <section>
-    <h1>Current Temperature: <span id='temperature'></span></h1>
-    <!-- Display temperature here -->
+    <h1>Current Temperature for <span id='city'></span></h1>
+
+    <label>Temperature:</label> <span id='outside-temperature'></span>
     <br>
-    PSM Set To: <span id='power-saving-mode'></span>
-    <!-- Display PSM here -->
-    <br>
-    Energy Usage: <span id='energy-usage'></span>
-    <!-- Display energyUsage here -->
-    <br><br>
+
+    <label>Select City</label>
+    <select id='current-city'>
+      <option value='london'>London, UK</option>
+      <option value='new-york'>New York</option>
+      <option value='paris'>Paris</option>
+      <option value='tokyo'>Tokyo</option>
+    </select>
+  </section>
+  <section>
+    <h1>Thermostat</h1>
+
+    <label>Temperature:</label> <span id='temperature'></span>
     <button id='temperature-up'> + </button>
     <button id='temperature-down'> - </button>
     <button id='reset'> Reset </button>
-    <button id='power-saving-mode-toggle'> PSM On / Off </button>
+    <br>
+
+    <label>Power Saving Mode:</label> <span id='power-saving-mode'></span>
+    <button id='power-saving-mode-toggle'></button>
+    <br>
+
+    <label>Energy Usage:</label> <span id='energy-usage'></span> <br>
+    <br>
+
   </section>
   <script src="src/thermostat.js"></script>
   <script src="http://code.jquery.com/jquery-3.2.1.js"
@@ -27,13 +43,33 @@
   <script>
   $( document ).ready(function() {
     var thermostat = new Thermostat;
-    console.log(thermostat);
-    $('#temperature').text(thermostat.getTemperature());
+    var city = 'London, UK';
+
+    updateCurrentCity();
+    updateOutsideTemperature();
+    updateTemperature();
     updatePSM();
+    updatePSMButton();
     updateEnergyUsage();
+
+    function updateCurrentCity() {
+      $('#city').text(city);
+    };
+
+    function updateOutsideTemperature() {
+      $.get('http://api.openweathermap.org/data/2.5/weather?q=' + city + '&appid=df1ce3c8a17e138622d3b9ae2e14b6bd&units=metric', function(data) {
+        $('#outside-temperature').text(data.main.temp);
+      });
+    };
 
     function updateTemperature() {
       $('#temperature').text(thermostat.getTemperature());
+      $('#temperature').attr('class', thermostat.energyUsage());
+    };
+
+    function updateEnergyUsage() {
+      $('#energy-usage').text(thermostat.energyUsage());
+      $('#energy-usage').attr('class', thermostat.energyUsage());
     };
 
     function updatePSM() {
@@ -43,9 +79,18 @@
       });
     };
 
-    function updateEnergyUsage() {
-      $('#energy-usage').text(thermostat.energyUsage());
+    function updatePSMButton() {
+      $('#power-saving-mode-toggle').text(function() {
+        if (thermostat.isPowerSavingModeOn()) return "Off";
+        return "On";
+      });
     };
+
+    $('#current-city').change(function() {
+      city = $('#current-city').val();
+      updateCurrentCity();
+      updateOutsideTemperature();
+    });
 
     $('#temperature-up').click(function() {
       thermostat.up();
@@ -68,6 +113,7 @@
     $('#power-saving-mode-toggle').click(function() {
       thermostat.togglePowerSavingMode();
       updatePSM();
+      updatePSMButton();
     });
   });
   </script>
