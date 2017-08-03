@@ -6,13 +6,13 @@
 </head>
 <body>
   <section>
-    <h1 for='temperature'>Current Temperature</h1>
+    <h1>Current Temperature: <span id='temperature'></span></h1>
     <!-- Display temperature here -->
     <br>
-    PSM Set To:<span id='power-saving-mode'> On </span>
+    PSM Set To: <span id='power-saving-mode'></span>
     <!-- Display PSM here -->
     <br>
-    Energy Usage:<span id='energy-usage'> Medium </span>
+    Energy Usage: <span id='energy-usage'></span>
     <!-- Display energyUsage here -->
     <br><br>
     <button id='temperature-up'> + </button>
@@ -24,5 +24,52 @@
   <script src="http://code.jquery.com/jquery-3.2.1.js"
   integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
   crossorigin="anonymous"></script>
+  <script>
+  $( document ).ready(function() {
+    var thermostat = new Thermostat;
+    console.log(thermostat);
+    $('#temperature').text(thermostat.getTemperature());
+    updatePSM();
+    updateEnergyUsage();
+
+    function updateTemperature() {
+      $('#temperature').text(thermostat.getTemperature());
+    };
+
+    function updatePSM() {
+      $('#power-saving-mode').text(function() {
+        if (thermostat.isPowerSavingModeOn()) return "On";
+        return "Off";
+      });
+    };
+
+    function updateEnergyUsage() {
+      $('#energy-usage').text(thermostat.energyUsage());
+    };
+
+    $('#temperature-up').click(function() {
+      thermostat.up();
+      updateTemperature();
+      updateEnergyUsage();
+    });
+
+    $('#temperature-down').click(function() {
+      thermostat.down();
+      updateTemperature();
+      updateEnergyUsage();
+    });
+
+    $('#reset').click(function() {
+      thermostat.resetTemperature();
+      updateTemperature();
+      updateEnergyUsage();
+    });
+
+    $('#power-saving-mode-toggle').click(function() {
+      thermostat.togglePowerSavingMode();
+      updatePSM();
+    });
+  });
+  </script>
 </body>
 </html>
