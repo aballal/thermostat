@@ -1,0 +1,44 @@
+body {
+  font-family: sans-serif;
+}
+label {
+  display:inline-block;
+  margin-bottom: 10px;
+}
+h2 {
+  text-align: center;
+  font-size: 500%
+}
+button {
+  border-radius: 5px;
+  width: 80px;
+  border: 1px solid;
+}
+.low-usage {
+  color: green;
+}
+.medium-usage {
+  color: black;
+}
+.high-usage {
+  color: red;
+}
+.outer_container {
+  position: absolute;
+  display: table;
+  width: 100%;
+  height: 100%;
+}
+.inner_container {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+.content {
+  display: inline-block;
+  text-align: center;
+  padding: 0px 100px 50px 100px;
+  background: #A9D0F5;
+  border : 50px solid;
+  border-radius: 5%;
+}

@@ -5,37 +5,44 @@
   <link href='style.css' rel='stylesheet' type='text/css'>
 </head>
 <body>
-  <section>
-    <h1>Current Temperature for <span id='city'></span></h1>
+  <div class='outer_container'>
+    <div class='inner_container'>
+      <section class='content'>
+        <h2><span id='temperature'></span></h2>
+        <span id='energy-usage'></span>
+        <br>
 
-    <label>Temperature:</label> <span id='outside-temperature'></span>
-    <br>
+        <p>
+          <button id='temperature-down'> - </button>
+          <button id='reset'> Reset </button>
+          <button id='temperature-up'> + </button>
+        </p>
+        <br>
 
-    <label>Select City</label>
-    <select id='current-city'>
-      <option value='london'>London, UK</option>
-      <option value='new-york'>New York</option>
-      <option value='paris'>Paris</option>
-      <option value='tokyo'>Tokyo</option>
-    </select>
-  </section>
-  <section>
-    <h1>Thermostat</h1>
+        <p>
+          <label>Power Saving Mode is </label> <span id='power-saving-mode'></span>
+          <br>
+          <button id='power-saving-mode-toggle'></button>
+        </p>
+        <br>
 
-    <label>Temperature:</label> <span id='temperature'></span>
-    <button id='temperature-up'> + </button>
-    <button id='temperature-down'> - </button>
-    <button id='reset'> Reset </button>
-    <br>
+        <p>
+          <h3><span id='city'></span></h3>
+          <span id='outside-temperature'></span>
+        </p>
+        <br/>
 
-    <label>Power Saving Mode:</label> <span id='power-saving-mode'></span>
-    <button id='power-saving-mode-toggle'></button>
-    <br>
+        <select id='current-city'>
+          <option value='london'>London, UK</option>
+          <option value='new-york'>New York</option>
+          <option value='paris'>Paris</option>
+          <option value='tokyo'>Tokyo</option>
+        </select>
 
-    <label>Energy Usage:</label> <span id='energy-usage'></span> <br>
-    <br>
+      </section>
+    </div>
+  </div>
 
-  </section>
   <script src="src/thermostat.js"></script>
   <script src="http://code.jquery.com/jquery-3.2.1.js"
   integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
@@ -53,17 +60,17 @@
     updateEnergyUsage();
 
     function updateCurrentCity() {
-      $('#city').text(city);
+      $('#city').text($('#current-city option:selected').text());
     };
 
     function updateOutsideTemperature() {
       $.get('http://api.openweathermap.org/data/2.5/weather?q=' + city + '&appid=df1ce3c8a17e138622d3b9ae2e14b6bd&units=metric', function(data) {
-        $('#outside-temperature').text(data.main.temp);
+        $('#outside-temperature').text(Math.round(data.main.temp * 10) / 10 + ' C');
       });
     };
 
     function updateTemperature() {
-      $('#temperature').text(thermostat.getTemperature());
+      $('#temperature').text(thermostat.getTemperature() + ' C');
       $('#temperature').attr('class', thermostat.energyUsage());
     };
 
@@ -81,8 +88,8 @@
 
     function updatePSMButton() {
       $('#power-saving-mode-toggle').text(function() {
-        if (thermostat.isPowerSavingModeOn()) return "Off";
-        return "On";
+        if (thermostat.isPowerSavingModeOn()) return "Turn Off";
+        return "Turn On";
       });
     };
 
